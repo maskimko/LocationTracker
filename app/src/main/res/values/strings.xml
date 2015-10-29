@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Location.try</string>
+    <string name="app_name">My Android Location</string>
     
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -15,4 +15,11 @@
     </string>
     <string name="text_stub">Here should be some information</string>
     <string name="title_activity_maps">Map</string>
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="accuracy_label">Accuracy</string>
+
+    <string name="no_location_detected">
+        No location detected. Make sure location is enabled on the device.
+    </string>
 </resources>

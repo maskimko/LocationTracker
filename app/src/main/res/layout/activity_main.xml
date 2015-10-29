@@ -14,11 +14,33 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true">
 
-        <EditText
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/latitude_text"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/text_stub"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/lat_long_text_size" />
+
+        <TextView
+            android:id="@+id/longitude_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="@dimen/text_margin"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/lat_long_text_size" />
+
+        <TextView
+            android:id="@+id/accuracy_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="@dimen/text_margin"
+            android:textIsSelectable="true"
+            android:textSize="@dimen/lat_long_text_size" />
     </LinearLayout>
 </RelativeLayout>
