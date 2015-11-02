@@ -1,6 +1,8 @@
 package android.ua.pp.msk.locationtry;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -41,6 +43,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     protected Boolean requestingLocationUpdates;
     protected String lastUpdateTime;
+
+    //TODO change this assignment when getting server side information
+    private static final int DEVICE_ID = 0;
+
+    private LocationDbHelper locationDbHelper;
+    private SQLiteDatabase db;
+
 
     public static final String AUTHENTICATED = "android.ua.pp.msk.locationtry.MainActivity.AUTHENTICATED";
     public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
@@ -85,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         updateValueFromBundle(savedInstanceState);
 
         buildGoogleApiClient();
+        locationDbHelper = new LocationDbHelper(getBaseContext());
+        db = locationDbHelper.getWritableDatabase();
     }
 
     protected synchronized void buildGoogleApiClient() {
@@ -156,7 +167,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         lastLocation = location;
         lastUpdateTime = DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
         updateUI();
+
         Toast.makeText(this, getResources().getString(R.string.location_updated_message), Toast.LENGTH_SHORT).show();
+        updateDb();
     }
 
     private void updateValueFromBundle(Bundle savedInstanceState){
@@ -173,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 lastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
             }
             updateUI();
+            updateDb();
         }
     }
 
@@ -191,6 +205,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         longitudeText.setText(String.format("%s : %f", longitudeLabel, lastLocation.getLongitude()));
         accuracyText.setText(String.format("%s : %f", accuracyLabel, lastLocation.getAccuracy()));
         updateTimeText.setText(String.format("%s: %s", updateTimeLabel, lastUpdateTime));
+    }
+
+    private void updateDb(){
+
+        ContentValues values = new ContentValues();
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_LATITUDE, lastLocation.getLatitude());
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_LONGITUDE, lastLocation.getLongitude());
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_ALTITUDE, lastLocation.getAltitude());
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_ACCURACY, lastLocation.getAccuracy());
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_DEV_ID, DEVICE_ID);
+        values.put(LocationDbHelper.LocationEntry.COLUMN_NAME_TIMESTAMP, lastUpdateTime);
+
+        long newRowId;
+        newRowId  = db.insert(LocationDbHelper.LocationEntry.TABLE_NAME, LocationDbHelper.LocationEntry.COLUMN_NAME_NULLABLE, values);
+        Log.d(this.getClass().getName(), "Location has been stored to the db " + values.toString());
     }
 
     protected void stopLocationUpdates(){
